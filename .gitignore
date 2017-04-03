@@ -1,0 +1,6 @@
+__pycache__/
+tmp/
+testing/options.py
+.env
+compose.env.dev
+compose.env.prod

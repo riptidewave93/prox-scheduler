@@ -1,0 +1,15 @@
+#!/usr/bin/env python3
+# Settings for prox-scheduler frontend
+
+## Misc Options ##
+download_dir = "#dlfolder#" # Stores our downloads from build systems
+frontend_ver="0.10.#datecode#"
+
+## MySQL options ##
+sql_host = '#sqlhost#'
+sql_user = '#sqluser#'
+sql_pass = '#sqlpass#'
+sql_db = '#sqldb#'
+
+## Scheduler Options ##
+default_template_id = #templateid#

@@ -1,0 +1,6 @@
+mysqlclient
+openssh_wrapper
+paramiko
+proxmoxer
+requests
+scp

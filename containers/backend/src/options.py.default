@@ -1,0 +1,63 @@
+#!/usr/bin/env python3
+# Settings for prox-scheduler backend
+
+# Used to enable verbose debug information
+DEBUG = #debug#
+
+#### Global Options ####
+
+## Misc Options ##
+download_dir = "#dlfolder#" # Stores our downloads from build systems
+
+## MySQL Options ##
+sql_host = "#mysqlhost#"
+sql_user = "#mysqluser#"
+sql_pass = "#mysqlpass#"
+sql_db = "#mysqldb#"
+
+#### Backend Options ####
+
+## Proxmox Options ##
+# Connection info for our API account
+prox_url = "proxmox" # This will not change, set via hosts file
+prox_user = "#proxmoxuser#"
+prox_pass = "#proxmoxpass#"
+default_storage = #defaultstorage# # Name of default storage we want to use. If
+# left set to None, it will deploy to the same storage that hosts the Template
+prox_template_id = #proxmoxtemplateid#
+
+## Userdata Options ##
+# The following flags are used to define the start and end of our userdata
+# code in the instance description
+ud_start_flag = "==USERDATA-START=="
+ud_end_flag = "==USERDATA-END=="
+
+## SSH Options ##
+# User and port for SSH. Note our docker image will generate us an SSH key for
+# authentication, so ENSURE that {PSCHED-SSH-KEY} is used in your userdata as a
+# placeholder and is appended to your authorized_keys file to ensure this key
+# gets added.
+ssh_user = "#sshuser#"
+ssh_port = #sshport#
+
+## Build Options ##
+build_flagfile = "/tmp/buildstatus"
+
+## Scheduler Options ##
+# This option lets you select how the scheduler works. Options are:
+#
+# mem = Returns node with the most free (unprovisioned) memory. OP available
+# realmem = Returns node with most free (real) memory. OP available
+# load = Returns node with the lowest real 5m load average. No OP available
+# cpus = Returns node with lowest CPU core provisioning. OP available
+# random = Returns a random node, for those who like to live dangerously
+scheduler_logic = "#schedulerlogic#"
+
+# Used to define our OP (1.0 = 100%, normal) for our scheduler choice if avail.
+scheduler_op = #schedulerop#
+
+# Used to limit how many "builds" each backend.py deployment can do at once
+backend_threads = #maxthreads#
+
+# Used to limit how many events can be "reserved" in total for this instance, not per thread
+backend_reserved_events = #maxscheduledtasks#

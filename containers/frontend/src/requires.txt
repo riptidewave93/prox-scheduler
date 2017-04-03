@@ -1,0 +1,7 @@
+Flask
+Flask-HTTPAuth
+Flask-MySQLdb
+Flask-RESTful
+Flask-UUID
+requests
+gunicorn

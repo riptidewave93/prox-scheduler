@@ -1,0 +1,72 @@
+version: '2'
+
+services:
+
+  # This is needed as it sets our permissions for our user restricted containers
+  mk-volume:
+    image: alpine:latest
+    volumes:
+      - ${BUILD_STORAGE_PATH}
+    command: "chown 1000:1000 ${BUILD_STORAGE_PATH}"
+
+  database:
+    build: ./containers/database/
+    image: proxsched-db
+    environment:
+      - MYSQL_DATABASE=prox-scheduler # Do not change me!
+      - MYSQL_USER=${DB_OUR_USER}
+      - MYSQL_PASSWORD=${DB_OUR_PASS}
+      - MYSQL_ROOT_PASSWORD=${DB_ROOT_PW}
+
+  backend:
+    build: ./containers/backend/
+    image: proxsched-backend
+    environment:
+      - DEBUG=${BE_DEBUG}
+      - SSH_USER=${BE_SSH_USER}
+      - SSH_PORT=${BE_SSH_PORT}
+      - MAX_THREADS=${BE_WORKERS}
+      - MAX_SCHEDULED_TASKS=${BE_MAX_TASKS}
+      - PROXMOX_USERNAME=${PROXMOX_USER}
+      - PROXMOX_PASSWORD=${PROXMOX_PASS}
+      - PROXMOX_DEFAULT_STORAGE=${PROXMOX_DEFAULT_STORAGE}
+      - MYSQL_HOST=db
+      - MYSQL_DB=prox-scheduler # Do not change me!
+      - MYSQL_USER=${DB_OUR_USER}
+      - MYSQL_PASS=${DB_OUR_PASS}
+      - SCHEDULER_OP=${SCH_OP_RATIO}
+      - SCHEDULER_LOGIC=${SCH_TYPE}
+      - PROXMOX_TEMPLATE_ID=${SCH_DEF_TEMPLATE_ID}
+      - BUILD_DIR=${BUILD_STORAGE_PATH}
+    restart: unless-stopped
+    links:
+      - database:db
+    extra_hosts:
+      - proxmox:${PROXMOX_IP}
+    logging:
+      driver: json-file
+    volumes_from:
+      - mk-volume:rw
+
+  frontend:
+    build: ./containers/frontend/
+    image: proxsched-frontend
+    environment:
+      - DEBUG=${FE_DEBUG}
+      - WORKERS=${FE_WORKERS}
+      - GIT_HASH=${GIT_HASH}
+      - MYSQL_HOST=db
+      - MYSQL_DB=prox-scheduler # Do not change me!
+      - MYSQL_USER=${DB_OUR_USER}
+      - MYSQL_PASS=${DB_OUR_PASS}
+      - SCHEDULER_DEFAULT_TEMPLATE_ID=${SCH_DEF_TEMPLATE_ID}
+      - BUILD_DIR=${BUILD_STORAGE_PATH}
+    restart: unless-stopped
+    ports:
+      - 5000:5000
+    links:
+      - database:db
+    logging:
+      driver: json-file
+    volumes_from:
+      - mk-volume:rw
