@@ -18,7 +18,7 @@ Setup
     pveum passwd ProxScheduler@pve
     pveum usermod ProxScheduler@pve -group CloudScheduler
     ```
-  * Create a VM Template within Proxmox that has prox-prevision installed/configured. (GPL of this coming "soon" to my GitHub).
+  * Create a VM Template within Proxmox that has [prox-provision](https://github.com/riptidewave93/prox-provision) installed/configured.
   * Copy compose.env.example to `compose.env.prod` and `compose.env.dev` and edit each as necessary
   * Deploy the service in either production or development Mode
   * Once done, API will be accessable at http://0.0.0.0:5000/. Defaul user/pass of admin/Te$TP@sS1!
