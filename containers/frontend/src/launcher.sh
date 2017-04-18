@@ -23,8 +23,8 @@ if [ -z ${MYSQL_DB+x} ]; then
 	echo "Error, MYSQL_DB not set! Exiting..."
   sleep 60 && exit 1
 fi
-if [ -z ${SCHEDULER_DEFAULT_TEMPLATE_ID+x} ]; then
-	echo "Error, SCHEDULER_DEFAULT_TEMPLATE_ID not set! Exiting..."
+if [ -z ${DEFAULT_TEMPLATE_ID+x} ]; then
+	echo "Error, DEFAULT_TEMPLATE_ID not set! Exiting..."
   sleep 60 && exit 1
 fi
 if [ -z ${BUILD_DIR+x} ]; then
@@ -44,7 +44,7 @@ if [ ! -f ./options.py ]; then
 	sed -i "s|#sqluser#|${MYSQL_USER}|g" ./options.py.default
 	sed -i "s|#sqlpass#|${MYSQL_PASS}|g" ./options.py.default
 	sed -i "s|#sqldb#|${MYSQL_DB}|g" ./options.py.default
-	sed -i "s|#templateid#|${SCHEDULER_DEFAULT_TEMPLATE_ID}|g" ./options.py.default
+	sed -i "s|#templateid#|${DEFAULT_TEMPLATE_ID}|g" ./options.py.default
 	mv ./options.py.default ./options.py
 fi
 

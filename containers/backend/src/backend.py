@@ -38,14 +38,14 @@ def UpdateInstanceState(logger, uuid, state):
     db.close()
 
 # A "worker" for an instance, this is threaded!!!
-def worker(binst):
+def worker():
     while True:
-        if queue.empty():
+        if itemqueue.empty():
             # Thread is out of tasks
             break
         else:
             # Grab a task from the queue
-            binst = queue.get()
+            binst = itemqueue.get()
 
         # Start run
         logging.debug("Build Data: " + str(binst))
@@ -60,7 +60,7 @@ def worker(binst):
             logging.info("Entering Build Flow for " + binst["uuid"])
 
             # Create our instance object
-            ourrun = Instance(proxmox, logging, binst, "create")
+            ourrun = Instance(proxmox, logging, binst, buildlock, "create")
 
             # Create our instance via full clone
             logging.info('VM is Building...')
@@ -160,7 +160,7 @@ def worker(binst):
             logging.info("Entering Destroy Flow for " + binst["uuid"])
 
             # Create our instance object
-            ourrun = Instance(proxmox, logging, binst, "destroy")
+            ourrun = Instance(proxmox, logging, binst, None, "destroy")
 
             # First, power off the instance
             try:
@@ -183,7 +183,6 @@ def worker(binst):
 
         logging.info("Done with " + binst["uuid"])
 
-
 # Define our logger, because, logger
 if DEBUG:
     logging.basicConfig(level=logging.DEBUG,
@@ -200,10 +199,10 @@ else:
 logging = logging.getLogger("prox-scheduler-backend")
 
 # Define our queue for builds
-queue = queue.Queue()
+itemqueue = queue.Queue()
 
-# define this as it's an arg for threading. Thanks threading.
-binst = None
+# Define our queue for Create Locks (prevents racing)
+buildlock = threading.Lock()
 
 if __name__ == '__main__':
     # First start, wait for DB to spinup
@@ -243,7 +242,7 @@ if __name__ == '__main__':
         # For each build...
         for build in resp:
             # If we can take more tasks
-            if queue.qsize() < backend_reserved_events:
+            if itemqueue.qsize() < backend_reserved_events:
                 logging.debug("Adding " + build["uuid"] + " to queue")
                 # Make this ours before we push it up
                 if build['state'] == 1:
@@ -252,14 +251,12 @@ if __name__ == '__main__':
                 elif build['state'] == 20:
                     UpdateInstanceState(logging, build["uuid"], 21)
                     build['state'] = 21  # Update locally as well
-                queue.put(build)
+                itemqueue.put(build)
             continue
 
-        # Start our threads
+        # Start our threads as needed
         for i in range(backend_threads):
-            t = threading.Thread(target=worker, args=(binst,))
+            t = threading.Thread(target=worker)
             t.start()
-        t.join()  # Wait til our threads are done to continue
-        # If we are here, we hit all threads. To prevent race looping, small
-        # nap
+        # Sleep before we re-loop for new things
         time.sleep(5)

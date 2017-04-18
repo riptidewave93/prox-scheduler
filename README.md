@@ -43,8 +43,6 @@ To Do
 ----
   * Look into moving to celery
   * Add logging to the DB, allow for more verbose errors on any failure event
-  * Add a wait queue for node scheduling (DB based?)
-  * Work on merging scheduler logic types
-  * Setup limit for running events per hypervisor to scheduler
+  * Add storage space check logic (OP ratio for this?)
   * Possibly split out scheduler to it's own container/service?
   * Finish & Cleanup Documentation

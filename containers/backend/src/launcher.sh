@@ -48,20 +48,44 @@ fi
 if [ -z ${SSH_PORT+x} ]; then
   SSH_PORT="22"
 fi
-if [ -z ${SCHEDULER_LOGIC+x} ]; then
-	echo "Error, SCHEDULER_LOGIC is not set!"
-  sleep 60 && exit 1
-fi
-if [ -z ${SCHEDULER_OP+x} ]; then
-	echo "Error, SCHEDULER_OP is not set!"
-  sleep 60 && exit 1
-fi
 if [ -z ${MAX_THREADS+x} ]; then
 	echo "Error, MAX_THREADS is not set!"
   sleep 60 && exit 1
 fi
 if [ -z ${MAX_SCHEDULED_TASKS+x} ]; then
 	echo "Error, MAX_SCHEDULED_TASKS is not set!"
+  sleep 60 && exit 1
+fi
+if [ -z ${SCH_MEM_OP_RATIO+x} ]; then
+	echo "Error, SCH_MEM_OP_RATIO is not set!"
+	sleep 60 && exit 1
+fi
+if [ -z ${SCH_CPU_OP_RATIO+x} ]; then
+	echo "Error, SCH_CPU_OP_RATIO is not set!"
+  sleep 60 && exit 1
+fi
+if [ -z ${SCH_MEM_PROV_WEIGHT+x} ]; then
+	echo "Error, SCH_MEM_PROV_WEIGHT is not set!"
+  sleep 60 && exit 1
+fi
+if [ -z ${SCH_CPU_PROV_WEIGHT+x} ]; then
+	echo "Error, SCH_CPU_PROV_WEIGHT is not set!"
+  sleep 60 && exit 1
+fi
+if [ -z ${SCH_REAL_MEM_WEIGHT+x} ]; then
+	echo "Error, SCH_REAL_MEM_WEIGHT is not set!"
+  sleep 60 && exit 1
+fi
+if [ -z ${SCH_REAL_CPU_WEIGHT+x} ]; then
+	echo "Error, SCH_REAL_CPU_WEIGHT is not set!"
+  sleep 60 && exit 1
+fi
+if [ -z ${SCH_MAX_INFLIGHT_ON_NODE+x} ]; then
+	echo "Error, SCH_MAX_INFLIGHT_ON_NODE is not set!"
+  sleep 60 && exit 1
+fi
+if [ -z ${SCH_MAX_VMS_ON_NODE+x} ]; then
+	echo "Error, SCH_MAX_VMS_ON_NODE is not set!"
   sleep 60 && exit 1
 fi
 
@@ -88,6 +112,14 @@ if [ ! -f ./options.py ]; then
   sed -i "s|#schedulerop#|${SCHEDULER_OP}|g" ./options.py.default
   sed -i "s|#maxthreads#|${MAX_THREADS}|g" ./options.py.default
   sed -i "s|#maxscheduledtasks#|${MAX_SCHEDULED_TASKS}|g" ./options.py.default
+	sed -i "s|#mopr#|${SCH_MEM_OP_RATIO}|g" ./options.py.default
+	sed -i "s|#copr#|${SCH_CPU_OP_RATIO}|g" ./options.py.default
+	sed -i "s|#mpw#|${SCH_MEM_PROV_WEIGHT}|g" ./options.py.default
+	sed -i "s|#cpw#|${SCH_CPU_PROV_WEIGHT}|g" ./options.py.default
+	sed -i "s|#rmw#|${SCH_REAL_MEM_WEIGHT}|g" ./options.py.default
+	sed -i "s|#rcw#|${SCH_REAL_CPU_WEIGHT}|g" ./options.py.default
+	sed -i "s|#mion#|${SCH_MAX_INFLIGHT_ON_NODE}|g" ./options.py.default
+	sed -i "s|#mvon#|${SCH_MAX_VMS_ON_NODE}|g" ./options.py.default
 	mv ./options.py.default ./options.py
 fi
 

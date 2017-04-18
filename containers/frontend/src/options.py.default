@@ -3,7 +3,7 @@
 
 ## Misc Options ##
 download_dir = "#dlfolder#" # Stores our downloads from build systems
-frontend_ver="0.10.#datecode#"
+frontend_ver="0.11.#datecode#"
 
 ## MySQL options ##
 sql_host = '#sqlhost#'

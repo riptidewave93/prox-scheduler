@@ -17,6 +17,7 @@ services:
       - MYSQL_USER=${DB_OUR_USER}
       - MYSQL_PASSWORD=${DB_OUR_PASS}
       - MYSQL_ROOT_PASSWORD=${DB_ROOT_PW}
+    restart: unless-stopped
 
   backend:
     build: ./containers/backend/
@@ -34,10 +35,16 @@ services:
       - MYSQL_DB=prox-scheduler # Do not change me!
       - MYSQL_USER=${DB_OUR_USER}
       - MYSQL_PASS=${DB_OUR_PASS}
-      - SCHEDULER_OP=${SCH_OP_RATIO}
-      - SCHEDULER_LOGIC=${SCH_TYPE}
-      - PROXMOX_TEMPLATE_ID=${SCH_DEF_TEMPLATE_ID}
+      - PROXMOX_TEMPLATE_ID=${PROXMOX_DEF_TEMPLATE_ID}
       - BUILD_DIR=${BUILD_STORAGE_PATH}
+      - SCH_MEM_OP_RATIO=${SCH_MEM_OP_RATIO}
+      - SCH_CPU_OP_RATIO=${SCH_CPU_OP_RATIO}
+      - SCH_CPU_PROV_WEIGHT=${SCH_CPU_PROV_WEIGHT}
+      - SCH_MEM_PROV_WEIGHT=${SCH_MEM_PROV_WEIGHT}
+      - SCH_REAL_CPU_WEIGHT=${SCH_REAL_CPU_WEIGHT}
+      - SCH_REAL_MEM_WEIGHT=${SCH_REAL_MEM_WEIGHT}
+      - SCH_MAX_INFLIGHT_ON_NODE=${SCH_MAX_INFLIGHT_ON_NODE}
+      - SCH_MAX_VMS_ON_NODE=${SCH_MAX_VMS_ON_NODE}
     restart: unless-stopped
     links:
       - database:db
@@ -59,7 +66,7 @@ services:
       - MYSQL_DB=prox-scheduler # Do not change me!
       - MYSQL_USER=${DB_OUR_USER}
       - MYSQL_PASS=${DB_OUR_PASS}
-      - SCHEDULER_DEFAULT_TEMPLATE_ID=${SCH_DEF_TEMPLATE_ID}
+      - DEFAULT_TEMPLATE_ID=${PROXMOX_DEF_TEMPLATE_ID}
       - BUILD_DIR=${BUILD_STORAGE_PATH}
     restart: unless-stopped
     ports:
